@@ -1,6 +1,8 @@
 # Cinch::Dicebag
 
-TODO: Write a gem description
+Cinch Plugin to allow users to roll dice in channels.
+
+Supports rolling specific dice as well as a random assortment of dice. (Leaderboards coming soon)
 
 ## Installation
 
@@ -18,7 +20,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Just add the plugin to your list:
+
+    @bot = Cinch::Bot.new do
+      configure do |c|
+        c.plugins.plugins = [Cinch::Plugins::Dicebag]
+      end
+    end
+
+Then in channel use .roll:
+
+    .roll 5d20
+
+You can also use .dicebag to roll a random assortment of dice.
+
+    < Brian > .dicebag
+    < bot > Brian rolls a large bag of dice totalling 11052.
 
 ## Contributing
 
