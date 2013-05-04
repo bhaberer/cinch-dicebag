@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["bhaberer@gmail.com"]
   gem.description   = %q{Cinch Plugin that allows uses in the channel to roll specific dice or roll a random assortment of dice to compete for high scores.}
   gem.summary       = %q{Cinch Plugin: Dicebag and Dice rolls}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/bhaberer/cinch-dicebag"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

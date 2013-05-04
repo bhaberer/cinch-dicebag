@@ -1,4 +1,4 @@
-# Cinch::Dicebag
+# Cinch::Plugins::Dicebag
 
 Cinch Plugin to allow users to roll dice in channels.
 

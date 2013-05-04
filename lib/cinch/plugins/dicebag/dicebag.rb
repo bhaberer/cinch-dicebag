@@ -33,29 +33,29 @@ module Cinch::Plugins
         return
       end
 
-      nick = m.user.nick.downcase
-      dice = [rand(250), rand(500), rand(750), rand(1000)].map { |d| d.floor }
-      bag = "#{dice[0]}d4 #{dice[1]}d6 #{dice[2]}d10 #{dice[3]}d20"
-      result = roll_dice(bag)
+      dice = { :d4 => rand(250), :d6 => rand(500), :d10 => rand(750), :d20 => rand(1000) }
+      result = roll_dice(dice.map { |die, count| "#{count}#{die}" })
 
-      total = dice.inject(:+)
-      if total < 100
-        size = 'tiny'
-      elsif total < 500 && total >= 100
-        size = 'small'
-      elsif total < 1000 && total >= 500
-        size = 'medium'
-      elsif total < 1500 && total >= 1000
-        size = 'large'
-      elsif total < 2000 && total >= 1500
-        size = 'hefty'
-      else
-        size = 'huge'
-      end
+      total = dice.values.inject(:+)
+      size =  case total
+              when 0..100
+                'tiny'
+              when 101..500
+                'small'
+              when 501..1000
+                'medium'
+              when 1001..1500
+                'large'
+              when 1501..2000
+                'hefty'
+              else
+                'huge'
+              end
 
       m.reply "#{m.user.nick} rolls a #{size} bag of dice totalling #{result[:total]}."
 
       channel = m.channel.name
+      nick    = m.user.nick.downcase
 
       unless @storage.data.key?(channel)
         @storage.data[channel] = Hash.new
@@ -72,16 +72,18 @@ module Cinch::Plugins
         m.reply "This is a new high score, their old score was #{old[:score]}, #{old[:time].ago.to_words}."
       end
 
-      # Keep an eye on this and only do it on changes if it becomes a perf issue.
       synchronize(:dice_save) do
         @storage.save
       end
     end
 
     def roll_specific(m, bag)
-      result = roll_dice(bag)
-      response = "#{result[:rolls].join(', ')} totalling #{result[:total]}"
-      m.reply "#{m.user.nick} rolls #{response}" unless response.nil?
+      result = roll_dice(bag.split(' '))
+      if result.nil?
+        m.reply "I'm sorry that's not the right way to roll dice.", true
+      else
+        m.reply "#{m.user.nick} rolls #{result[:rolls].join(', ')} totalling #{result[:total]}"
+      end
     end
 
     private
@@ -89,7 +91,9 @@ module Cinch::Plugins
     def roll_dice(dice)
       rolls = []
       total = 0
-      dice = dice.split(' ')
+
+      # Clean out anything invalid
+      dice.delete_if { |d| d.match(/\d+d\d+/).nil? }
       dice.each do |die|
         if die.match(/\d+d\d+/)
           count = die.match(/(\d+)d\d+/)[1].to_i rescue 0
@@ -106,7 +110,11 @@ module Cinch::Plugins
           end
         end
       end
-      return { :rolls => rolls, :total => total }
+      if rolls.empty? || total.zero?
+        return nil
+      else
+        return { :rolls => rolls, :total => total }
+      end
     end
 
     def roll_dice_type(sides, count)
