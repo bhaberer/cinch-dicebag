@@ -25,8 +25,6 @@ module Cinch::Plugins
       m.reply (dice.nil? ? roll_dicebag(m.user.nick, m.channel) : roll(m.user.nick, dice))
     end
 
-    private
-
     def roll_dicebag(nick, channel)
       return "You must use that command in the main channel." if channel.nil?
 
