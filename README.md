@@ -1,4 +1,6 @@
-# Cinch::Plugins::Dicebag
+#Cinch::Plugins::Dicebag
+
+[![Code Climate](https://codeclimate.com/github/bhaberer/cinch-dicebag.png)](https://codeclimate.com/github/bhaberer/cinch-dicebag)
 
 Cinch Plugin to allow users to roll dice in channels.
 
