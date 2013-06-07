@@ -1,13 +1,9 @@
 #Cinch::Plugins::Dicebag
 
 [![Gem Version](https://badge.fury.io/rb/cinch-dicebag.png)](http://badge.fury.io/rb/cinch-dicebag)
-
 [![Dependency Status](https://gemnasium.com/bhaberer/cinch-dicebag.png)](https://gemnasium.com/bhaberer/cinch-dicebag)
-
 [![Build Status](https://travis-ci.org/bhaberer/cinch-dicebag.png?branch=master)](https://travis-ci.org/bhaberer/cinch-dicebag)
-
 [![Coverage Status](https://coveralls.io/repos/bhaberer/cinch-dicebag/badge.png?branch=master)](https://coveralls.io/r/bhaberer/cinch-dicebag?branch=master)
-
 [![Code Climate](https://codeclimate.com/github/bhaberer/cinch-dicebag.png)](https://codeclimate.com/github/bhaberer/cinch-dicebag)
 
 Cinch Plugin to allow users to roll dice in channels.
