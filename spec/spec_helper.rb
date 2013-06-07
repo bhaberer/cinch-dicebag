@@ -1,6 +1,6 @@
-require 'cinch-dicebag'
 require 'coveralls'
 Coveralls.wear!
+require 'cinch-dicebag'
 
 
 def fake_bot
