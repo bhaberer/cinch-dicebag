@@ -1,5 +1,6 @@
 #Cinch::Plugins::Dicebag
 
+[![Build Status](https://travis-ci.org/bhaberer/cinch-dicebag.png?branch=master)](https://travis-ci.org/bhaberer/cinch-dicebag)
 
 [![Code Climate](https://codeclimate.com/github/bhaberer/cinch-dicebag.png)](https://codeclimate.com/github/bhaberer/cinch-dicebag)
 
