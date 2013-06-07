@@ -61,8 +61,66 @@ describe Cinch::Plugins::Dicebag do
       @plugin.roll_dice([]).should be_zero
     end
 
+    it "should return a non zero total on a normal dice list" do
+      @plugin.roll_dice(['3d3', '4d5']).should_not be_zero
+    end
+
+    it "should clear out any invalid dice rolls" do
+      @plugin.roll_dice(['33']).should be_zero
+    end
   end
 
+  describe "roll_die" do
+    it "should return an acceptable value for a given roll" do
+      @plugin.roll_die(1, 1).should == 1
+      (5..15).should include(@plugin.roll_die(3, 5))
+    end
 
+    it "should return 0 for any negetive values" do
+      @plugin.roll_die(-1,  1).should == 0
+      @plugin.roll_die( 1, -1).should == 0
+      @plugin.roll_die(-1, -1).should == 0
+    end
+  end
 
+  describe "get_bag_size" do
+    it "should return 'huge' for out of bounds queries" do
+      @plugin.get_bag_size(50000).should == 'huge'
+    end
+
+    it "should return the proper size for tiny range" do
+      @plugin.get_bag_size(0).should            == 'tiny'
+      @plugin.get_bag_size(rand(100)).should    == 'tiny'
+      @plugin.get_bag_size(100).should          == 'tiny'
+    end
+
+    it "should return the proper size for small range" do
+      @plugin.get_bag_size(101).should              == 'small'
+      @plugin.get_bag_size(rand(399) + 101).should  == 'small'
+      @plugin.get_bag_size(500).should              == 'small'
+    end
+
+    it "should return the proper size for medium range" do
+      @plugin.get_bag_size(501).should              == 'medium'
+      @plugin.get_bag_size(rand(499) + 501).should  == 'medium'
+      @plugin.get_bag_size(1000).should             == 'medium'
+    end
+
+    it "should return the proper size for large range" do
+      @plugin.get_bag_size(1001).should              == 'large'
+      @plugin.get_bag_size(rand(499) + 1001).should  == 'large'
+      @plugin.get_bag_size(1500).should              == 'large'
+    end
+
+    it "should return the proper size for hefty range" do
+      @plugin.get_bag_size(1501).should              == 'hefty'
+      @plugin.get_bag_size(rand(499) + 1501).should  == 'hefty'
+      @plugin.get_bag_size(2000).should              == 'hefty'
+    end
+
+    it "should return the proper size for huge range" do
+      @plugin.get_bag_size(2001).should              == 'huge'
+      @plugin.get_bag_size(20001).should             == 'huge'
+    end
+  end
 end
