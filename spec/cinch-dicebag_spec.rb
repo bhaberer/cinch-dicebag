@@ -33,7 +33,7 @@ describe Cinch::Plugins::Dicebag do
     end
   end
 
-  describe 'rolling a dicebag' do
+  describe 'roll_dicebag' do
     it "should return a string" do
       @plugin.roll_dicebag('user', Cinch::Channel.new('foo', fake_bot)).should_not be_nil
     end
@@ -49,10 +49,20 @@ describe Cinch::Plugins::Dicebag do
     end
 
     it "should announce a high score if the old score is higher" do
-      @plugin.storage.data['thom'] = { :score => 1, :time => Time.now }
-      text = @plugin.roll_dicebag('user', Cinch::Channel.new('foo', fake_bot))
-      text.match(/A new high score! Their old high roll was \d+/).should_not be_nil
+      @plugin.storage.data['foo']['brian'] = { :score => 1, :time => Time.now }
+      text = @plugin.roll_dicebag('brian', Cinch::Channel.new('foo', fake_bot))
+      text.match(/A new high score/).should_not be_nil
+      text.match(/Their old high roll was \d+/).should_not be_nil
     end
   end
+
+  describe 'roll_dice' do
+    it "should return zero if the dice list is empty" do
+      @plugin.roll_dice([]).should be_zero
+    end
+
+  end
+
+
 
 end
