@@ -11,6 +11,8 @@ module Cinch::Plugins
 
     enforce_cooldown
 
+    attr_accessor :storage
+
     self.help = "Roll a random bag of dice with .dicebag, you can also use .roll (dice count)d(sides) to roll specific dice (e.g. '.roll 4d6 3d20')"
 
     match /dicebag/
@@ -40,10 +42,11 @@ module Cinch::Plugins
     end
 
     def roll(nick, dice)
+      return nil if dice.nil? || nick.nil?
+
       result = roll_dice(dice.split(' '))
-      unless result.nil? || nick.nil?
-        return "#{nick} rolls #{dice} totalling #{result}"
-      end
+
+      return "#{nick} rolls #{dice} totalling #{result}" unless result.nil?
     end
 
     def roll_die(sides, count)
