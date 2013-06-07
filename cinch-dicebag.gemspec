@@ -20,8 +20,9 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rspec'
 
-  gem.add_dependency 'cinch', '>= 2.0.0'
-  gem.add_dependency 'time-lord', '1.0.1'
-  gem.add_dependency 'cinch-cooldown'
-  gem.add_dependency 'cinch-storage'
+  gem.add_dependency 'cinch',           '>= 2.0.0'
+  gem.add_dependency 'time-lord',       '~> 1.0.1'
+  gem.add_dependency 'cinch-cooldown',  '>= 1.0.0'
+  gem.add_dependency 'cinch-storage',   '~> 0.0.2'
+  gem.add_dependency 'cinch-toolbox',   '~> 0.0.5'
 end

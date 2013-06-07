@@ -41,7 +41,7 @@ module Cinch::Plugins
 
     def roll(nick, dice)
       result = roll_dice(dice.split(' '))
-      unless result.nil?
+      unless result.nil? || nick.nil?
         return "#{nick} rolls #{dice} totalling #{result}"
       end
     end
