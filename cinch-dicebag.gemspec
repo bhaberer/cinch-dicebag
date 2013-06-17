@@ -25,5 +25,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'time-lord',       '~> 1.0.1'
   gem.add_dependency 'cinch-cooldown',  '>= 1.0.0'
   gem.add_dependency 'cinch-storage',   '~> 0.0.2'
-  gem.add_dependency 'cinch-toolbox',   '~> 0.0.5'
+  gem.add_dependency 'cinch-toolbox',   '~> 1.0.0'
 end
