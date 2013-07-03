@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'cinch'
-require 'cinch-toolbox'
+require 'cinch/toolbox'
 require 'cinch-cooldown'
 require 'cinch-storage'
 require 'time-lord'
@@ -16,34 +16,36 @@ module Cinch::Plugins
 
     self.help = "Roll a random bag of dice with .dicebag, you can also use .roll (dice count)d(sides) to roll specific dice (e.g. '.roll 4d6 3d20')"
 
-    match /dicebag/
-    match /roll (.*)/
+    match /dicebag/,    method: :roll_dicebag
+    match /roll (.*)/,  method: :roll
 
     def initialize(*args)
       super
       @storage = CinchStorage.new(config[:filename] || 'yaml/dice.yml')
     end
 
-    def execute(m, dice = nil)
-      m.reply (dice.nil? ? roll_dicebag(m.user.nick, m.channel) : roll(m.user.nick, dice))
-    end
-
     # Roll a random assortment of dice, total the rolls, and record the score.
     # @param [String] nick Nickname of the user rolling.
     # @param [Cinch::Channel] channel The Channel object where the roll took place.
     # @return [String] A description of the roll that took place
-    def roll_dicebag(nick, channel)
-      return "You must use that command in the main channel." if channel.nil?
+    def roll_dicebag(m)
+      if m.channel.nil?
+        m.reply "You must use that command in the main channel."
+        return
+      end
 
-      dice  = { :d4 => rand(250), :d6 => rand(500), :d10 => rand(750), :d20 => rand(1000) }
+      nick    = m.user.nick
+      channel = m.channel.name
+
+      dice  = { d4: rand(250), d6: rand(500), d10: rand(750), d20: rand(1000) }
 
       total = roll_dice(dice.map { |die, count| "#{count}#{die}" })
       size  = get_bag_size(dice.values.inject(:+))
 
       message = "#{nick} rolls a #{size} bag of dice totalling #{total}. " +
-                score_check(nick.downcase, channel.name, total)
+                score_check(nick.downcase, channel, total)
 
-      return message
+      m.reply message
     end
 
     # Roll a specific set of dice and return the pretty result
@@ -51,12 +53,12 @@ module Cinch::Plugins
     # @param [String] dice Space delimited string of dice to role.
     #   (i.e. '6d12 4d20 d10'
     # @return [String] String describing the dice that were rolled
-    def roll(nick, dice)
-      return nil if dice.nil? || nick.nil?
+    def roll(m, dice)
+      return if dice.nil?
 
       result = roll_dice(dice.split(' '))
 
-      return "#{nick} rolls #{dice} totalling #{result}" unless result.nil?
+      m.reply "#{m.user.nick} rolls #{dice} totalling #{result}" unless result.nil?
     end
 
 
@@ -80,7 +82,7 @@ module Cinch::Plugins
         end
       end
 
-      return total
+      return total unless total.zero?
     end
 
     # Rolls an n-sided die a given amount of times and returns the total
