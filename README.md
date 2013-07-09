@@ -34,13 +34,13 @@ Just add the plugin to your list:
       end
     end
 
-Then in channel use .roll:
+Then in channel use !roll:
 
-    .roll 5d20
+    !roll 5d20
 
-You can also use .dicebag to roll a random assortment of dice.
+You can also use !dicebag to roll a random assortment of dice.
 
-    < Brian > .dicebag
+    < Brian > !dicebag
     < bot > Brian rolls a large bag of dice totalling 11052.
 
 ## Contributing

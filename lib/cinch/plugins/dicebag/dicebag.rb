@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 require 'cinch'
 require 'cinch/toolbox'
-require 'cinch-cooldown'
+require 'cinch/cooldown'
 require 'cinch-storage'
 require 'time-lord'
 
