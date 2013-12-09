@@ -54,7 +54,7 @@ describe Cinch::Plugins::Dicebag do
 
     it "should return an error if the user is not in a channel" do
       get_replies(make_message(@bot, '!dicebag' , { nick: 'ted' })).first.text.
-        should be_eql("You must use that command in the main channel.")
+        should be_eql("You must use that command in the main channel")
     end
 
     it "should return a string describing the user's bag roll" do

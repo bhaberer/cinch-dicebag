@@ -5,8 +5,8 @@ require 'cinch/cooldown'
 require 'cinch-storage'
 require 'time-lord'
 
-
 module Cinch::Plugins
+  # Cinch Plugin to allow dice rolling.
   class Dicebag
     include Cinch::Plugin
 
@@ -14,7 +14,9 @@ module Cinch::Plugins
 
     attr_accessor :storage
 
-    self.help = "Roll a random bag of dice with .dicebag, you can also use .roll (dice count)d(sides) to roll specific dice (e.g. '.roll 4d6 3d20')"
+    self.help = 'Roll a random bag of dice with .dicebag, you can also ' +
+                'use .roll (dice count)d(sides) to roll specific dice ' +
+                '(e.g. .roll 4d6 3d20)'
 
     match /dicebag/,    method: :roll_dicebag
     match /roll (.*)/,  method: :roll
@@ -26,26 +28,22 @@ module Cinch::Plugins
 
     # Roll a random assortment of dice, total the rolls, and record the score.
     # @param [String] nick Nickname of the user rolling.
-    # @param [Cinch::Channel] channel The Channel object where the roll took place.
+    # @param [Cinch::Channel] channel The Channel object where the roll took
+    #   place.
     # @return [String] A description of the roll that took place
     def roll_dicebag(m)
       if m.channel.nil?
-        m.reply "You must use that command in the main channel."
+        m.reply 'You must use that command in the main channel'
         return
       end
 
-      nick    = m.user.nick
-      channel = m.channel.name
-
       dice  = { d4: rand(250), d6: rand(500), d10: rand(750), d20: rand(1000) }
-
       total = roll_dice(dice.map { |die, count| "#{count}#{die}" })
       size  = get_bag_size(dice.values.inject(:+))
 
-      message = "#{nick} rolls a #{size} bag of dice totalling #{total}. " +
-                score_check(nick.downcase, channel, total)
-
-      m.reply message
+      m.reply "#{m.user.nick} rolls a #{size} bag of dice totalling " +
+              "#{total}. " +
+              score_check(m.user.nick.downcase, m.channel.name, total)
     end
 
     # Roll a specific set of dice and return the pretty result
@@ -58,9 +56,10 @@ module Cinch::Plugins
 
       result = roll_dice(dice.split(' '))
 
-      m.reply "#{m.user.nick} rolls #{dice} totalling #{result}" unless result.nil?
+      unless result.nil?
+        m.reply "#{m.user.nick} rolls #{dice} totalling #{result}"
+      end
     end
-
 
     # Takes an Array of dice rolls, sanitizes them, parses them, and dispatches
     #   their calculation to `roll_die`.
@@ -93,7 +92,7 @@ module Cinch::Plugins
       return 0 if sides < 1 || count < 1
       total = 0
       count.times { total += rand(sides) + 1 }
-      return total
+      total
     end
 
     # Simple method to return a flavor text 'size' description based on
@@ -102,18 +101,12 @@ module Cinch::Plugins
     # @return [String] Description of the size of the bag.
     def get_bag_size(size)
       case size
-      when 0..100
-        'tiny'
-      when 101..500
-        'small'
-      when 501..1000
-        'medium'
-      when 1001..1500
-        'large'
-      when 1501..2000
-        'hefty'
-      else
-        'huge'
+      when 0..100     then 'tiny'
+      when 101..500   then 'small'
+      when 501..1000  then 'medium'
+      when 1001..1500 then 'large'
+      when 1501..2000 then 'hefty'
+      else 'huge'
       end
     end
 
@@ -126,18 +119,17 @@ module Cinch::Plugins
     #   to that effect, otherwise returns a blank string.
     def score_check(nick, channel, score)
       # If the chennel or nick are not already initialized, spin them up
-      @storage.data[channel] ||= Hash.new
-      @storage.data[channel][nick] ||= { :score => score, :time => Time.now }
+      @storage.data[channel] ||= {}
+      @storage.data[channel][nick] ||= { score: score, time: Time.now }
 
       # Check and see if this is a higher score.
       old = @storage.data[channel][nick]
-      if @storage.data[channel][nick][:score] < score
-        @storage.data[channel][nick] = { :score => score, :time => Time.now }
-        @storage.synced_save(@bot)
-        return "A new high score! Their old high roll was #{old[:score]}, #{old[:time].ago.to_words}."
-      else
-        return ''
-      end
+      return '' unless @storage.data[channel][nick][:score] < score
+
+      @storage.data[channel][nick] = { score: score, time: Time.now }
+      @storage.synced_save(@bot)
+      "A new high score! Their old high roll was #{old[:score]}, " +
+        "#{old[:time].ago.to_words}."
     end
   end
 end
