@@ -56,7 +56,9 @@ module Cinch::Plugins
 
       result = roll_dice(dice.split(' '))
 
-      unless result.nil?
+      if result.is_a?(String)
+        m.reply result
+      elsif result.is_a?(Integer)
         m.reply "#{m.user.nick} rolls #{dice} totalling #{result}"
       end
     end
@@ -70,28 +72,39 @@ module Cinch::Plugins
       # Clean out anything invalid
       dice.delete_if { |d| d.match(/\d*d\d+/).nil? }
 
+      return roll_check?(dice) if roll_check?(dice)
+
       total = 0
 
       # Roll each group and total up the returned value
       dice.each do |die|
-        count = die[/(\d+)d\d+/, 1] || 1
-        sides = die[/\d?d(\d+)/, 1]
-        unless count.nil? || sides.nil?
-          total += roll_die(sides.to_i, count.to_i)
-        end
+        total += roll_die(die)
       end
 
-      return total unless total.zero?
+      return total.to_i unless total.zero?
+    end
+
+    # Takes an array of rolls and does sanity on it.
+    # @param [Array] dice Array of strings that correspond to valid die rolls.
+    #   (i.e. ['4d6', '6d10']
+    # @return [Fixnum] The total from rolling all of the dice.
+    def roll_check?(dice)
+      # Check to make sure it's not a stupid large roll, they clog threads.
+      count = dice.map { |die| die[/(\d+)d\d+/, 1].to_i || 1 }.inject(0, :+)
+      return 'I don\'t have that many dice in my bag!' unless count <= 10_000
+      false
     end
 
     # Rolls an n-sided die a given amount of times and returns the total
-    # @param [Fixnum] sides Number of sides of the die we're rolling.
-    # @param [Fixnum] count Number of times to roll the die.
+    # @param [Fixn] count Number of times to roll the die.
     # @return [Fixnum] The total from rolling the die.
-    def roll_die(sides, count)
-      return 0 if sides < 1 || count < 1
+    def roll_die(die)
+      count = (die[/(\d+)d\d+/, 1] || 1).to_i
+      sides = die[/\d?d(\d+)/, 1].to_i
+      return 0 if count.nil? || sides.nil? || sides < 1 || count < 1
       total = 0
       count.times { total += rand(sides) + 1 }
+
       total
     end
 
