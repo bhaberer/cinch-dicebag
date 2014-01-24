@@ -13,6 +13,11 @@ describe Cinch::Plugins::Dicebag do
         should_not be_nil
     end
 
+    it 'should return a roll from using a blank roll' do
+      get_replies(make_message(@bot, '!roll', { nick: 'ted' })).first.
+        should_not be_nil
+    end
+
     it 'should return a roll in bounds from rolling dice' do
       roll = get_replies(make_message(@bot, '!roll 3d3', { nick: 'ted' })).first.text
       roll = roll[/totalling (\d+)/, 1]
@@ -43,11 +48,6 @@ describe Cinch::Plugins::Dicebag do
     it 'should return a roll from rolling a single die' do
       get_replies(make_message(@bot, '!roll d3', { nick: 'ted' })).first.
         should_not be_nil
-    end
-
-    it 'should not return a string from rolling dice without a name' do
-      get_replies(make_message(@bot, '!roll .' , { nick: 'ted' })).first.
-        should be_nil
     end
 
     it 'should return a string describing the dice that were rolled' do

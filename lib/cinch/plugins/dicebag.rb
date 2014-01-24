@@ -20,6 +20,7 @@ module Cinch::Plugins
 
     match /dicebag/,    method: :roll_dicebag
     match /roll (.*)/,  method: :roll
+    match /roll/,       method: :roll
 
     def initialize(*args)
       super
@@ -51,9 +52,7 @@ module Cinch::Plugins
     # @param [String] dice Space delimited string of dice to role.
     #   (i.e. '6d12 4d20 d10'
     # @return [String] String describing the dice that were rolled
-    def roll(m, dice)
-      return if dice.nil?
-
+    def roll(m, dice = '1d20')
       result = roll_dice(dice.split(' '))
 
       if result.is_a?(String)
