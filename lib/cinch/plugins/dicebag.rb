@@ -18,9 +18,9 @@ module Cinch::Plugins
                 'use .roll (dice count)d(sides) to roll specific dice ' +
                 '(e.g. .roll 4d6 3d20)'
 
-    match /dicebag/,    method: :roll_dicebag
-    match /roll (.*)/,  method: :roll
-    match /roll/,       method: :roll
+    match /dicebag/,        method: :roll_dicebag
+    match /roll(?:\s(.*))/, method: :roll
+    match /roll\z/,         method: :roll
 
     def initialize(*args)
       super
