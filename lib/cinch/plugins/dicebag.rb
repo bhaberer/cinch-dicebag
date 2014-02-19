@@ -2,7 +2,7 @@
 require 'cinch'
 require 'cinch/toolbox'
 require 'cinch/cooldown'
-require 'cinch-storage'
+require 'cinch/storage'
 require 'time-lord'
 
 module Cinch::Plugins
@@ -24,7 +24,7 @@ module Cinch::Plugins
 
     def initialize(*args)
       super
-      @storage = CinchStorage.new(config[:filename] || 'yaml/dice.yml')
+      @storage = Cinch::Storage.new(config[:filename] || 'yaml/dice.yml')
     end
 
     # Roll a random assortment of dice, total the rolls, and record the score.
