@@ -18,6 +18,19 @@ describe Cinch::Plugins::Dicebag do
         should_not be_nil
     end
 
+    it 'should allow "+" modifiers' do
+      roll = get_replies(make_message(@bot, '!roll 1d3+5', { nick: 'ted' })).first.text
+      roll = roll[/totalling (\d+)/, 1]
+      (6..8).should include roll.to_i
+    end
+
+    it 'should allow "-" modifiers' do
+      roll = get_replies(make_message(@bot, '!roll 1d1-5', { nick: 'ted' }))
+              .first
+              .text[/totalling (\-?\d+)/, 1].to_i
+              .should == -4
+    end
+
     it 'should return a roll in bounds from rolling dice' do
       roll = get_replies(make_message(@bot, '!roll 3d3', { nick: 'ted' })).first.text
       roll = roll[/totalling (\d+)/, 1]
@@ -78,7 +91,6 @@ describe Cinch::Plugins::Dicebag do
       text = get_replies(make_message(@bot, '!dicebag' , { nick: 'brian', channel: '#foo' })).first.text
       text.should match(/A new high score/)
       text.should match(/Their old high roll was \d+/)
-
     end
   end
 
@@ -94,17 +106,31 @@ describe Cinch::Plugins::Dicebag do
     it 'should clear out any invalid dice rolls' do
       @bot.plugins.first.roll_dice(['33']).should be_nil
     end
+
+    it 'should allow modifiers' do
+      @bot.plugins.first.roll_dice(['1d1+1', '1d1-4']).should == -1
+    end
   end
 
   describe 'roll_die' do
     it 'should return an acceptable value for a given roll' do
       @bot.plugins.first.roll_die('1d1').should == 1
-      (5..15).should include(@bot.plugins.first.roll_die('3d5'))
+      (3..15).should include(@bot.plugins.first.roll_die('3d5'))
     end
 
     it 'should return 0 for any negetive values' do
       @bot.plugins.first.roll_die('1d-1').should == 0
       @bot.plugins.first.roll_die('-1d-1').should == 0
+    end
+
+    it 'should add modifiers to the total' do
+      @bot.plugins.first.roll_die('1d1+2').should == 3
+      @bot.plugins.first.roll_die('3d1-2').should == 1
+    end
+
+    it 'should allow modifiers to take the total below zero' do
+      @bot.plugins.first.roll_die('1d1-1').should == 0
+      @bot.plugins.first.roll_die('1d1-2').should == -1
     end
   end
 
@@ -149,4 +175,3 @@ describe Cinch::Plugins::Dicebag do
     end
   end
 end
-

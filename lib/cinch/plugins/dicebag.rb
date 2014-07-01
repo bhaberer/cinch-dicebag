@@ -55,11 +55,8 @@ module Cinch::Plugins
     def roll(m, dice = '1d20')
       result = roll_dice(dice.split(' '))
 
-      if result.is_a?(String)
-        m.reply result
-      elsif result.is_a?(Integer)
-        m.reply "#{m.user.nick} rolls #{dice} totalling #{result}"
-      end
+      result = "#{m.user.nick} rolls #{dice} totalling #{result}" if result.is_a?(Integer)
+      m.reply result
     end
 
     # Takes an Array of dice rolls, sanitizes them, parses them, and dispatches
@@ -69,18 +66,18 @@ module Cinch::Plugins
     # @return [Fixnum] The total from rolling all of the dice.
     def roll_dice(dice)
       # Clean out anything invalid
-      dice.delete_if { |d| d.match(/\d*d\d+/).nil? }
+      dice.delete_if { |d| d.match(/\d*d\d+([\-\+]\d+)?/).nil? }
 
       return roll_check?(dice) if roll_check?(dice)
-
-      total = 0
-
+      
       # Roll each group and total up the returned value
+      total = nil
       dice.each do |die|
+        total ||= 0
         total += roll_die(die)
       end
 
-      return total.to_i unless total.zero?
+      total
     end
 
     # Takes an array of rolls and does sanity on it.
@@ -98,13 +95,25 @@ module Cinch::Plugins
     # @param [Fixn] count Number of times to roll the die.
     # @return [Fixnum] The total from rolling the die.
     def roll_die(die)
+      modifier = die[/[\-\+]\d+/]
+
       count = (die[/(\d+)d\d+/, 1] || 1).to_i
       sides = die[/\d?d(\d+)/, 1].to_i
+
       return 0 if count.nil? || sides.nil? || sides < 1 || count < 1
+
       total = 0
       count.times { total += rand(sides) + 1 }
 
+      return total += parse_modifier(modifier) unless modifier.nil?
+
       total
+    end
+
+    def parse_modifier(modifier)
+      operator = modifier[/\A[\+\-]/]
+      int = modifier[/\d+\z/].to_i
+      0.send(operator, int)
     end
 
     # Simple method to return a flavor text 'size' description based on
