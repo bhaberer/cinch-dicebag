@@ -96,41 +96,41 @@ describe Cinch::Plugins::Dicebag do
 
   describe 'roll_dice' do
     it 'should return nil if the dice list is empty' do
-      @bot.plugins.first.roll_dice([]).should be_nil
+      Cinch::Plugins::Dicebag::Die.roll([]).should be_nil
     end
 
     it 'should return a non zero total on a normal dice list' do
-      @bot.plugins.first.roll_dice(['3d3', '4d5']).should_not be_zero
+      Cinch::Plugins::Dicebag::Die.roll(['3d3', '4d5']).should_not be_zero
     end
 
     it 'should clear out any invalid dice rolls' do
-      @bot.plugins.first.roll_dice(['33']).should be_nil
+      Cinch::Plugins::Dicebag::Die.roll(['33']).should be_nil
     end
 
     it 'should allow modifiers' do
-      @bot.plugins.first.roll_dice(['1d1+1', '1d1-4']).should == -1
+      Cinch::Plugins::Dicebag::Die.roll(['1d1+1', '1d1-4']).should == -1
     end
   end
 
-  describe 'roll_die' do
+  describe 'Die.roll' do
     it 'should return an acceptable value for a given roll' do
-      @bot.plugins.first.roll_die('1d1').should == 1
-      (3..15).should include(@bot.plugins.first.roll_die('3d5'))
+      Cinch::Plugins::Dicebag::Die.roll('1d1').should == 1
+      (3..15).should include(Cinch::Plugins::Dicebag::Die.roll('3d5'))
     end
 
-    it 'should return 0 for any negetive values' do
-      @bot.plugins.first.roll_die('1d-1').should == 0
-      @bot.plugins.first.roll_die('-1d-1').should == 0
+    it 'should return nil for any negetive values' do
+      Cinch::Plugins::Dicebag::Die.roll('1d-1').should == nil
+      Cinch::Plugins::Dicebag::Die.roll('-1d-1').should == nil
     end
 
     it 'should add modifiers to the total' do
-      @bot.plugins.first.roll_die('1d1+2').should == 3
-      @bot.plugins.first.roll_die('3d1-2').should == 1
+      Cinch::Plugins::Dicebag::Die.roll('1d1+2').should == 3
+      Cinch::Plugins::Dicebag::Die.roll('3d1-2').should == 1
     end
 
     it 'should allow modifiers to take the total below zero' do
-      @bot.plugins.first.roll_die('1d1-1').should == 0
-      @bot.plugins.first.roll_die('1d1-2').should == -1
+      Cinch::Plugins::Dicebag::Die.roll('1d1-1').should == 0
+      Cinch::Plugins::Dicebag::Die.roll('1d1-2').should == -1
     end
   end
 
