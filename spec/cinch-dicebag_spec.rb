@@ -77,20 +77,50 @@ describe Cinch::Plugins::Dicebag do
 
     it 'should return an error if the user is not in a channel' do
       get_replies(make_message(@bot, '!dicebag' , { nick: 'ted' })).first.text.
-        should be_eql("You must use that command in the main channel")
+        should == 'You must use that command in the main channel.'
     end
 
     it 'should return a string describing the user\'s bag roll' do
       get_replies(make_message(@bot, '!dicebag' , { nick: 'ted', channel: '#bar' })).first.text.
         should match(/ted rolls a [a-z]+ bag of dice totalling \d+/)
     end
+  end
+
+  describe 'scores' do
+    before(:each) do
+      @bot.plugins.first.storage.data['#foo'] = { brian: { score: 1, time: Time.now },
+                                                  braad: { score: 2, time: Time.now },
+                                                  billy: { score: 3, time: Time.now },
+                                                  britt: { score: 4, time: Time.now },
+                                                  brett: { score: 5, time: Time.now },
+                                                  paulv: { score: 6, time: Time.now },
+                                                  stacy: { score: 7, time: Time.now },
+                                                  calrs: { score: 8, time: Time.now },
+                                                  susie: { score: 9, time: Time.now },
+                                                  enton: { score: 10, time: Time.now },
+                                                  grill: { score: 11, time: Time.now },
+                                                  evilg: { score: 12, time: Time.now },
+                                                  mobiu: { score: 13, time: Time.now },
+                                                  gamma: { score: 14, time: Time.now },
+                                                  omega: { score: 15, time: Time.now } }
+    end
 
     it 'should announce a high score if the old score is higher' do
       get_replies(make_message(@bot, '!dicebag' , { nick: 'brian', channel: '#foo' }))
-      @bot.plugins.first.storage.data['#foo']['brian'] = { score: 1, time: Time.now }
       text = get_replies(make_message(@bot, '!dicebag' , { nick: 'brian', channel: '#foo' })).first.text
       text.should match(/A new high score/)
       text.should match(/Their old high roll was \d+/)
+    end
+
+    it 'should allow users to get a copy of the high scores' do
+      replies = get_replies(make_message(@bot, '!dicebag stats' , { nick: 'brian', channel: '#foo' }))
+      replies[1].text.should == '1 - omega [15]'
+      replies[5].text.should == '5 - grill [11]'
+    end
+
+    it 'should only show the first 10 scores' do
+      replies = get_replies(make_message(@bot, '!dicebag stats' , { nick: 'brian', channel: '#foo' }))
+      replies.length.should == 11
     end
   end
 
@@ -135,43 +165,98 @@ describe Cinch::Plugins::Dicebag do
   end
 
   describe 'get_bag_size' do
+    before(:each) do
+      @bag = Cinch::Plugins::Dicebag::Bag.new({})
+    end
+
     it 'should return \'huge\' for out of bounds queries' do
-      @bot.plugins.first.get_bag_size(50000).should == 'huge'
+      @bag.count = 50000
+      @bag.size.should == 'huge'
     end
 
     it 'should return the proper size for tiny range' do
-      @bot.plugins.first.get_bag_size(0).should            == 'tiny'
-      @bot.plugins.first.get_bag_size(rand(100)).should    == 'tiny'
-      @bot.plugins.first.get_bag_size(100).should          == 'tiny'
+      @bag.count = 0
+      @bag.size.should == 'tiny'
     end
 
     it 'should return the proper size for small range' do
-      @bot.plugins.first.get_bag_size(101).should              == 'small'
-      @bot.plugins.first.get_bag_size(rand(399) + 101).should  == 'small'
-      @bot.plugins.first.get_bag_size(500).should              == 'small'
+      @bag.count = rand(100)
+      @bag.size.should == 'tiny'
+    end
+
+    it 'should return the proper size for small range' do
+      @bag.count = 100
+      @bag.size.should == 'tiny'
+    end
+
+    it 'should return the proper size for small range' do
+      @bag.count = 101
+      @bag.size.should == 'small'
+    end
+
+    it 'should return the proper size for small range' do
+      @bag.count = rand(399) + 101
+      @bag.size.should == 'small'
+    end
+
+    it 'should return the proper size for small range' do
+      @bag.count = 500
+      @bag.size.should == 'small'
     end
 
     it 'should return the proper size for medium range' do
-      @bot.plugins.first.get_bag_size(501).should              == 'medium'
-      @bot.plugins.first.get_bag_size(rand(499) + 501).should  == 'medium'
-      @bot.plugins.first.get_bag_size(1000).should             == 'medium'
+      @bag.count = 501
+      @bag.size.should == 'medium'
+    end
+
+    it 'should return the proper size for medium range' do
+      @bag.count = rand(499) + 501
+      @bag.size.should == 'medium'
+    end
+
+    it 'should return the proper size for medium range' do
+      @bag.count = 1000
+      @bag.size.should == 'medium'
     end
 
     it 'should return the proper size for large range' do
-      @bot.plugins.first.get_bag_size(1001).should              == 'large'
-      @bot.plugins.first.get_bag_size(rand(499) + 1001).should  == 'large'
-      @bot.plugins.first.get_bag_size(1500).should              == 'large'
+      @bag.count = 1001
+      @bag.size.should == 'large'
+    end
+
+    it 'should return the proper size for large range' do
+      @bag.count = rand(499) + 1001
+      @bag.size.should == 'large'
+    end
+
+    it 'should return the proper size for large range' do
+      @bag.count = 1500
+      @bag.size.should == 'large'
     end
 
     it 'should return the proper size for hefty range' do
-      @bot.plugins.first.get_bag_size(1501).should              == 'hefty'
-      @bot.plugins.first.get_bag_size(rand(499) + 1501).should  == 'hefty'
-      @bot.plugins.first.get_bag_size(2000).should              == 'hefty'
+      @bag.count = 1501
+      @bag.size.should == 'hefty'
+    end
+
+    it 'should return the proper size for hefty range' do
+      @bag.count = rand(499) + 1501
+      @bag.size.should == 'hefty'
+    end
+
+    it 'should return the proper size for hefty range' do
+      @bag.count = 2000
+      @bag.size.should == 'hefty'
     end
 
     it 'should return the proper size for huge range' do
-      @bot.plugins.first.get_bag_size(2001).should              == 'huge'
-      @bot.plugins.first.get_bag_size(20001).should             == 'huge'
+      @bag.count = 2001
+      @bag.size.should == 'huge'
+    end
+
+    it 'should return the proper size for huge range' do
+      @bag.count = 20001
+      @bag.size.should == 'huge'
     end
   end
 end
