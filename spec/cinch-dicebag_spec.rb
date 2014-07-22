@@ -88,25 +88,24 @@ describe Cinch::Plugins::Dicebag do
 
   describe 'scores' do
     before(:each) do
-      @bot.plugins.first.storage.data['#foo'] = { brian: { score: 1, time: Time.now },
-                                                  braad: { score: 2, time: Time.now },
-                                                  billy: { score: 3, time: Time.now },
-                                                  britt: { score: 4, time: Time.now },
-                                                  brett: { score: 5, time: Time.now },
-                                                  paulv: { score: 6, time: Time.now },
-                                                  stacy: { score: 7, time: Time.now },
-                                                  calrs: { score: 8, time: Time.now },
-                                                  susie: { score: 9, time: Time.now },
-                                                  enton: { score: 10, time: Time.now },
-                                                  grill: { score: 11, time: Time.now },
-                                                  evilg: { score: 12, time: Time.now },
-                                                  mobiu: { score: 13, time: Time.now },
-                                                  gamma: { score: 14, time: Time.now },
-                                                  omega: { score: 15, time: Time.now } }
+      @bot.plugins.first.storage.data['#foo'] = { 'brian' => { score: 1, time: Time.now },
+                                                  'braad' => { score: 2, time: Time.now },
+                                                  'billy' => { score: 3, time: Time.now },
+                                                  'britt' => { score: 4, time: Time.now },
+                                                  'brett' => { score: 5, time: Time.now },
+                                                  'paulv' => { score: 6, time: Time.now },
+                                                  'stacy' => { score: 7, time: Time.now },
+                                                  'calrs' => { score: 8, time: Time.now },
+                                                  'susie' => { score: 9, time: Time.now },
+                                                  'enton' => { score: 10, time: Time.now },
+                                                  'grill' => { score: 11, time: Time.now },
+                                                  'evilg' => { score: 12, time: Time.now },
+                                                  'mobiu' => { score: 13, time: Time.now },
+                                                  'gamma' => { score: 14, time: Time.now },
+                                                  'omega' => { score: 15, time: Time.now } }
     end
 
     it 'should announce a high score if the old score is higher' do
-      get_replies(make_message(@bot, '!dicebag' , { nick: 'brian', channel: '#foo' }))
       text = get_replies(make_message(@bot, '!dicebag' , { nick: 'brian', channel: '#foo' })).first.text
       text.should match(/A new high score/)
       text.should match(/Their old high roll was \d+/)
