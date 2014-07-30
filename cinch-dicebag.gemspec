@@ -8,24 +8,21 @@ Gem::Specification.new do |gem|
   gem.version       = Cinch::Dicebag::VERSION
   gem.authors       = ['Brian Haberer']
   gem.email         = ['bhaberer@gmail.com']
-  gem.description   = %q{Cinch Plugin that allows uses in the channel to roll specific dice or roll a random assortment of dice to compete for high scores.}
-  gem.summary       = %q{Cinch Plugin: Dicebag and Dice rolls}
+  gem.description   = %q(Cinch Plugin that allows uses in the channel to roll specific dice or roll a random assortment of dice to compete for high scores.)
+  gem.summary       = %q(Cinch Plugin: Dicebag and Dice rolls)
   gem.homepage      = 'https://github.com/bhaberer/cinch-dicebag'
   gem.license       = 'MIT'
-
   gem.files         = `git ls-files`.split($/)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.executables   = gem.files.grep(/^bin\//).map { |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(/^(test|spec|features)\//)
   gem.require_paths = ['lib']
 
-  gem.add_development_dependency  'rake'
-  gem.add_development_dependency  'rspec'
-  gem.add_development_dependency  'coveralls'
-  gem.add_development_dependency  'cinch-test'
-
-  gem.add_dependency              'cinch',           '>= 2.0.12'
-  gem.add_dependency              'time-lord',       '~> 1.0.1'
-  gem.add_dependency              'cinch-cooldown',  '>= 1.1.1'
-  gem.add_dependency              'cinch-storage',   '~> 1.1.0'
-  gem.add_dependency              'cinch-toolbox',   '~> 1.1.0'
+  gem.add_development_dependency 'rake', '~> 0.9'
+  gem.add_development_dependency 'rspec', '~> 3'
+  gem.add_development_dependency 'coveralls', '~> 0.7'
+  gem.add_development_dependency 'cinch-test', '~> 0.0', '>= 0.0.2'
+  gem.add_dependency 'cinch', '~> 2'
+  gem.add_dependency 'cinch-cooldown', '~> 1.1', '>= 1.1.1'
+  gem.add_dependency 'cinch-storage', '~> 1.1'
+  gem.add_dependency 'cinch-toolbox', '~> 1.1'
 end
