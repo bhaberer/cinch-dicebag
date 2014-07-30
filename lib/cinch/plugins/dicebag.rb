@@ -11,8 +11,6 @@ module Cinch
     class Dicebag
       include Cinch::Plugin
 
-      enforce_cooldown
-
       attr_accessor :storage
 
       self.help = 'Roll a random bag of dice with .dicebag, you can also ' \
@@ -21,8 +19,8 @@ module Cinch
 
       match(/dicebag\z/, method: :dicebag)
       match(/dicebag stats/, method: :stats)
-      match(/roll(?:\s(.*))/, method: :roll)
-      match(/roll\z/, method: :roll)
+      match /roll(?:\s(.*))/, method: :roll
+      match /roll\z/, method: :roll
 
       def initialize(*args)
         super
