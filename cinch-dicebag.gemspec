@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'coveralls', '~> 0.7'
   gem.add_development_dependency 'cinch-test', '~> 0.1', '>= 0.1.0'
   gem.add_dependency 'cinch', '~> 2'
-  gem.add_dependency 'cinch-cooldown', '~> 1.1', '>= 1.1.1'
+  gem.add_dependency 'cinch-cooldown', '~> 1.1', '>= 1.1.5'
   gem.add_dependency 'cinch-storage', '~> 1.1'
   gem.add_dependency 'cinch-toolbox', '~> 1.1'
 end

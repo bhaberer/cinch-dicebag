@@ -11,6 +11,8 @@ module Cinch
     class Dicebag
       include Cinch::Plugin
 
+      enforce_cooldown
+
       attr_accessor :storage
 
       self.help = 'Roll a random bag of dice with .dicebag, you can also ' \
