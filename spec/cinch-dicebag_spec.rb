@@ -172,7 +172,7 @@ describe Cinch::Plugins::Dicebag do
 
     it 'should return \'huge\' for out of bounds queries' do
       @bag.count = 50000
-      expect(@bag.size).to eq('huge')
+      expect(@bag.size).to eq('massive')
     end
 
     it 'should return the proper size for tiny range' do
@@ -181,83 +181,83 @@ describe Cinch::Plugins::Dicebag do
     end
 
     it 'should return the proper size for small range' do
-      @bag.count = rand(100)
+      @bag.count = rand(1000)
       expect(@bag.size).to eq('tiny')
     end
 
     it 'should return the proper size for small range' do
-      @bag.count = 100
-      expect(@bag.size).to eq('tiny')
-    end
-
-    it 'should return the proper size for small range' do
-      @bag.count = 101
-      expect(@bag.size).to eq('small')
-    end
-
-    it 'should return the proper size for small range' do
-      @bag.count = rand(399) + 101
-      expect(@bag.size).to eq('small')
-    end
-
-    it 'should return the proper size for small range' do
-      @bag.count = 500
-      expect(@bag.size).to eq('small')
-    end
-
-    it 'should return the proper size for medium range' do
-      @bag.count = 501
-      expect(@bag.size).to eq('medium')
-    end
-
-    it 'should return the proper size for medium range' do
-      @bag.count = rand(499) + 501
-      expect(@bag.size).to eq('medium')
-    end
-
-    it 'should return the proper size for medium range' do
       @bag.count = 1000
+      expect(@bag.size).to eq('tiny')
+    end
+
+    it 'should return the proper size for small range' do
+      @bag.count = 1001
+      expect(@bag.size).to eq('small')
+    end
+
+    it 'should return the proper size for small range' do
+      @bag.count = rand(399) + 1001
+      expect(@bag.size).to eq('small')
+    end
+
+    it 'should return the proper size for small range' do
+      @bag.count = 1500
+      expect(@bag.size).to eq('small')
+    end
+
+    it 'should return the proper size for medium range' do
+      @bag.count = 1501
+      expect(@bag.size).to eq('medium')
+    end
+
+    it 'should return the proper size for medium range' do
+      @bag.count = rand(499) + 1501
+      expect(@bag.size).to eq('medium')
+    end
+
+    it 'should return the proper size for medium range' do
+      @bag.count = 2500
       expect(@bag.size).to eq('medium')
     end
 
     it 'should return the proper size for large range' do
-      @bag.count = 1001
+      @bag.count = 2501
       expect(@bag.size).to eq('large')
     end
 
     it 'should return the proper size for large range' do
-      @bag.count = rand(499) + 1001
+      @bag.count = rand(499) + 2501
       expect(@bag.size).to eq('large')
     end
 
     it 'should return the proper size for large range' do
-      @bag.count = 1500
+      @bag.count = 3500
       expect(@bag.size).to eq('large')
     end
 
     it 'should return the proper size for hefty range' do
-      @bag.count = 1501
+      @bag.count = 3501
       expect(@bag.size).to eq('hefty')
     end
 
     it 'should return the proper size for hefty range' do
-      @bag.count = rand(499) + 1501
+      @bag.count = rand(499) + 3501
       expect(@bag.size).to eq('hefty')
     end
 
     it 'should return the proper size for hefty range' do
-      @bag.count = 2000
+      @bag.count = 4500
       expect(@bag.size).to eq('hefty')
     end
 
     it 'should return the proper size for huge range' do
-      @bag.count = 2001
-      expect(@bag.size).to eq('huge')
+      @bag.count = 4501
+      expect(@bag.size).to eq('massive')
     end
 
     it 'should return the proper size for huge range' do
       @bag.count = 20001
-      expect(@bag.size).to eq('huge')
+      expect(@bag.size).to eq('massive')
     end
   end
 end

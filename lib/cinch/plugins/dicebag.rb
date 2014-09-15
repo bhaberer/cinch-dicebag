@@ -27,7 +27,7 @@ module Cinch
       def initialize(*args)
         super
         @storage = Cinch::Storage.new(config[:filename] || 'yaml/dice.yml')
-        @bag = Bag.new(4 => 250, 6 => 500, 10 => 750, 20 => 1000)
+        @bag = Bag.new(4 => 250, 6 => 750, 10 => 1200, 20 => 1000)
       end
 
       # Roll a random assortment of dice, total the rolls, and record the score.

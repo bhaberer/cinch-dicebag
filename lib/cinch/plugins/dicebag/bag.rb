@@ -28,13 +28,13 @@ module Cinch
         # @param [Fixnum] size The number of dice in the dicebag.
         # @return [String] Description of the size of the bag.
         def size
-          case count
-          when 0..100     then 'tiny'
-          when 101..500   then 'small'
-          when 501..1000  then 'medium'
-          when 1001..1500 then 'large'
-          when 1501..2000 then 'hefty'
-          else 'huge'
+          case @count
+          when 0..1000 then 'tiny'
+          when 1001..1500 then 'small'
+          when 1501..2500 then 'medium'
+          when 2501..3500 then 'large'
+          when 3501..4500 then 'hefty'
+          else 'massive'
           end
         end
 
@@ -42,7 +42,7 @@ module Cinch
 
         def die_array
           @dice.keys.map do |sides|
-            "#{sides}d#{@dice[sides]}"
+            "#{rand(@dice[sides])}d#{sides}"
           end
         end
       end
