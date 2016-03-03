@@ -21,37 +21,39 @@ module Cinch
 
       match(/dicebag\z/, method: :dicebag)
       match(/dicebag stats/, method: :stats)
-      match /roll(?:\s(.*))/, method: :roll
-      match /roll\z/, method: :roll
+      match(/roll(?:\s(.*))/, method: :roll)
+      match(/roll\z/, method: :roll)
 
       def initialize(*args)
         super
+        # initialize storage
         @storage = Cinch::Storage.new(config[:filename] || 'yaml/dice.yml')
-        @bag = Bag.new(4 => 250, 6 => 750, 10 => 1200, 20 => 1000)
+
+        # Create a bag of dice, pass a hash of the maxcount for each type
+        #   for random rolls.
+        @bag = Bag.new(4 => 250, 6 => 750, 10 => 1500, 20 => 2000)
       end
 
       # Roll a random assortment of dice, total the rolls, and record the score.
-      # @param [String] nick Nickname of the user rolling.
-      # @param [Cinch::Channel] channel The Channel object where the roll took
-      #   place.
+      # @param [Message] message Nickname of the user rolling.
       # @return [String] A description of the roll that took place
-      def dicebag(m)
-        return if Cinch::Toolbox.sent_via_private_message?(m)
+      def dicebag(message)
+        return if Cinch::Toolbox.sent_via_private_message?(message)
 
         @bag.roll
-        user = m.user.nick.downcase
-        channel = m.channel.name
-        m.reply "#{m.user.nick} rolls a #{@bag.size} bag of dice totalling " \
-                "#{@bag.score}. #{score_check(user, channel, @bag.score)}"
+        user = message.user.nick
+        channel = message.channel.name
+        message.reply "#{user} rolls a #{@bag.size} bag of dice totalling " \
+                      "#{@bag.score}. #{score_check(user, channel, @bag.score)}"
       end
 
-      def stats(m)
-        return if Cinch::Toolbox.sent_via_private_message?(m)
+      def stats(message)
+        return if Cinch::Toolbox.sent_via_private_message?(message)
 
-        m.user.send 'Top ten dicebag rolls:'
-        top10 = top_ten_rolls(m.channel.name)
+        message.user.send 'Top ten dicebag rolls:'
+        top10 = top_ten_rolls(message.channel.name)
         top10.each_with_index do |r, i|
-          m.user.send "#{i + 1} - #{r.first} [#{r.last}]"
+          message.user.send "#{i + 1} - #{r.first} [#{r.last}]"
         end
       end
 
@@ -60,12 +62,12 @@ module Cinch
       # @param [String] dice Space delimited string of dice to role.
       #   (i.e. '6d12 4d20 d10'
       # @return [String] String describing the dice that were rolled
-      def roll(m, dice = '1d20')
+      def roll(message, dice = '1d20')
         result = Die.roll(dice.split(' '))
         if result.is_a?(Integer)
-          result = "#{m.user.nick} rolls #{dice} totalling #{result}"
+          result = "#{message.user.nick} rolls #{dice} totalling #{result}"
         end
-        m.reply result
+        message.reply result
       end
 
       private
@@ -84,6 +86,7 @@ module Cinch
       # @return [String] If the new score is higher, returns an announcement
       #   to that effect, otherwise returns a blank string.
       def score_check(nick, channel, score)
+        nick = nick.downcase
         # If the chennel or nick are not already initialized, spin them up
         @storage.data[channel] ||= {}
         @storage.data[channel][nick] ||= { score: score, time: Time.now }

@@ -19,6 +19,7 @@ module Cinch
           # Clean out anything invalid
           dice = clean_roll(dice)
 
+          # Initialize a total
           total = nil
 
           # Return if the sanity fails
@@ -33,31 +34,37 @@ module Cinch
           total
         end
 
-        private
-
         # Rolls an n-sided die a given amount of times and returns the total
         # @param [String] count Number of times to roll the die.
         # @return [Fixnum] The total from rolling the die.
         def self.cast(die)
+          # Pull out the data from the roll. 
           modifier = die[MOD_REGEX]
           count = (die[ROLLS_REGEX, 1] || 1).to_i
           sides = die[SIDES_REGEX, 1].to_i
 
+          # init the total
           total = 0
+
+          # Bail if the roll isn't sane looking.
           return total unless check_die_sanity(count, sides)
 
+          # Roll dem dice!
           count.times { total += rand(sides) + 1 }
 
+          # Parse the modifier and apply it, if there is one
           return total += parse_modifier(modifier) unless modifier.nil?
 
           total
         end
 
+        # Makes sure people aren't doing silly things.
         def self.check_die_sanity(count, sides)
           return false if count.nil? || sides.nil? || sides < 1 || count < 1
           true
         end
 
+        # Remove any stupid crap people try to sneak into the rolls.
         def self.clean_roll(dice)
           dice.delete_if { |d| d.match(/\d*d\d+([\-\+]\d+)?/).nil? }
           dice
@@ -67,16 +74,14 @@ module Cinch
         # @param [Array] dice Array of strings that correspond to valid
         #   die rolls. (i.e. ['4d6', '6d10']
         # @return [Boolean] Result of sanity check.
-        def self.die_check?(dice_list)
+        def self.die_check?(dice)
           # Check to make sure it's not a stupid large roll, they clog threads.
-          count =
-            dice_list.map do |d|
-              d[/(\d+)d\d+/, 1].to_i || 1
-            end.inject(0, :+)
+          count = dice.map { |d| d[/(\d+)d\d+/, 1].to_i || 1 }.inject(0, :+)
           return false if count >= 10_000
           true
         end
 
+        # Parse out the modified and return it as an int.
         def self.parse_modifier(modifier)
           operator = modifier[/\A[\+\-]/]
           int = modifier[/\d+\z/].to_i

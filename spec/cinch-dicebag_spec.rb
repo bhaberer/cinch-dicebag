@@ -186,32 +186,32 @@ describe Cinch::Plugins::Dicebag do
     end
 
     it 'should return the proper size for small range' do
-      @bag.count = 1000
+      @bag.count = 900
       expect(@bag.size).to eq('tiny')
     end
 
     it 'should return the proper size for small range' do
-      @bag.count = 1001
+      @bag.count = 1000
       expect(@bag.size).to eq('small')
     end
 
     it 'should return the proper size for small range' do
-      @bag.count = rand(399) + 1001
+      @bag.count = rand(999) + 1000
       expect(@bag.size).to eq('small')
     end
 
     it 'should return the proper size for small range' do
-      @bag.count = 1500
+      @bag.count = 1999
       expect(@bag.size).to eq('small')
     end
 
     it 'should return the proper size for medium range' do
-      @bag.count = 1501
+      @bag.count = 2500
       expect(@bag.size).to eq('medium')
     end
 
     it 'should return the proper size for medium range' do
-      @bag.count = rand(499) + 1501
+      @bag.count = rand(999) + 2000
       expect(@bag.size).to eq('medium')
     end
 
@@ -221,12 +221,12 @@ describe Cinch::Plugins::Dicebag do
     end
 
     it 'should return the proper size for large range' do
-      @bag.count = 2501
+      @bag.count = 3500
       expect(@bag.size).to eq('large')
     end
 
     it 'should return the proper size for large range' do
-      @bag.count = rand(499) + 2501
+      @bag.count = rand(999) + 3000
       expect(@bag.size).to eq('large')
     end
 
@@ -236,12 +236,12 @@ describe Cinch::Plugins::Dicebag do
     end
 
     it 'should return the proper size for hefty range' do
-      @bag.count = 3501
+      @bag.count = 4500
       expect(@bag.size).to eq('hefty')
     end
 
     it 'should return the proper size for hefty range' do
-      @bag.count = rand(499) + 3501
+      @bag.count = rand(999) + 4000
       expect(@bag.size).to eq('hefty')
     end
 
@@ -251,12 +251,12 @@ describe Cinch::Plugins::Dicebag do
     end
 
     it 'should return the proper size for huge range' do
-      @bag.count = 4501
+      @bag.count = 5000
       expect(@bag.size).to eq('massive')
     end
 
     it 'should return the proper size for huge range' do
-      @bag.count = 20001
+      @bag.count = 20000
       expect(@bag.size).to eq('massive')
     end
   end
